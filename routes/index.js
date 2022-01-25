@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.status(200).json({msg: 'default route'})
+  res.json({msg: 'default route'})
 });
 
 module.exports = router;
