@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router  = express.Router();
 
 /* GET home page. */
 router.get('/',
@@ -8,8 +8,8 @@ router.get('/',
      * @param {express.Response} res
      * @param {express.NextFunction} next
      */
-    function(req, res, next) {
-  res.json({msg: 'default route'})
-});
+    function (req, res, next) {
+        res.json({ msg: 'default route' });
+    });
 
 module.exports = router;
