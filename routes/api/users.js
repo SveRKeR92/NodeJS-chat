@@ -1,28 +1,27 @@
 const express = require('express');
 const router = express.Router();
 
+const {PrismaClient} = require('@prisma/client');
+
+const client = new PrismaClient()
+
+/* GET All User */
+
 router.get('/',
     /**
      * @param {express.Request} req 
      * @param {express.Response} res 
      * @param {express.NextFunction} next 
      */
-    function (req, res, next) {
+    async (req, res, next) => {
         res.json({
-            count: 15,
-            users: [{
-                    id: 1,
-                    name: 'Crewmate',
-                    isConnected: true
-                },
-                {
-                    id: 2,
-                    name: 'Amogus',
-                    isConnected: false
-                }
-            ]
+            count: await client.users.count(),
+            users: [await client.users.findMany()]
         })
     });
+
+
+/* GET One User */
 
 router.get('/:userId',
     /**
@@ -30,19 +29,48 @@ router.get('/:userId',
      * @param {express.Response} res 
      * @param {express.NextFunction} next 
      */
-    (req, res, next) => {
+    async (req, res, next) => {
         const userId = Number.parseInt(req.params.userId);
-        res.json({userId}).status(200);
+        const user = await client.users.findUnique({
+            where: {
+                id: userId,
+            },
+        }).catch((e) => {
+            res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
+            throw e
+        }).finally(async () => {
+            await client.$disconnect()
+        })
+
+        res.json({user}).status(200);
     });
 
-router.post('/:userId',
+
+/* POST User */
+
+router.post('/',
     /**
-     * @param {express.Request<{userId: string}>} req 
+     * @param {express.Request} req 
      * @param {express.Response} res 
      * @param {express.NextFunction} next 
      */
-    (req, res, next) => {
-        res.json(req.params.userId).status(200);
+    async (req, res, next) => {
+        const userData = req.fields;
+        const newUser = await client.users.create({
+            data: {
+                username: userData.username,
+                email: userData.email,
+                password: userData.password,
+            }
+        }).catch((e) => {
+            res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
+            throw e
+        }).finally(async () => {
+            await client.$disconnect()
+        })
+        res.json({msg:'User saved successfully!', user: newUser }).status(200);
     });
+
+
 
 module.exports = router;

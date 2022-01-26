@@ -12,5 +12,4 @@ model users {
   username  String  @db.VarChar(255)
   email     String  @unique(map: "email") @db.VarChar(255)
   password  String  @db.VarChar(255)
-  connected Boolean
 }
