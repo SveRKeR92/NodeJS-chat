@@ -6,6 +6,12 @@ const { PrismaClient } = require("@prisma/client");
 const bcryptjs = require('bcryptjs');
 const prisma = new PrismaClient();
 
+const {PrismaClient} = require('@prisma/client');
+
+const client = new PrismaClient()
+
+/* GET All User */
+
 router.get('/',
     /**
      * @param {express.Request} req 
@@ -13,10 +19,14 @@ router.get('/',
      * @param {express.NextFunction} next 
      */
     async (req, res, next) => {
-        const allUsers = await prisma.users.findMany()
-        res.json(allUsers);
-    }
-);
+        res.json({
+            count: await client.users.count(),
+            users: [await client.users.findMany()]
+        })
+    });
+
+
+/* GET One User */
 
 router.get('/:userId',
     /**
@@ -24,6 +34,26 @@ router.get('/:userId',
      * @param {express.Response} res 
      * @param {express.NextFunction} next 
      */
+    async (req, res, next) => {
+        const userId = Number.parseInt(req.params.userId);
+        const user = await client.users.findUnique({
+            where: {
+                id: userId,
+            },
+        }).catch((e) => {
+            res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
+            throw e
+        }).finally(async () => {
+            await client.$disconnect()
+        })
+
+        res.json({user}).status(200);
+    });
+
+
+/* POST User */
+
+router.post('/',
     async(req, res, next) => {
         const userId = Number.parseInt(req.params.userId);
         const theUser = await prisma.users.findUnique({where : {id: userId}})
@@ -43,22 +73,39 @@ router.get('/:userId',
 
 router.get('/create',
     /**
-     * @param {express.Request<{userId: string}>} req 
+     * @param {express.Request} req 
      * @param {express.Response} res 
      * @param {express.NextFunction} next 
      */
     async (req, res, next) => {
-        const password = bcryptjs.hashSync("Bebou")
-        const createUser = await prisma.users.create({
+        const userData = req.fields;
+        const newUser = await client.users.create({
             data: {
-                username: "MAXIME A TORD 11.6%",
-                email: "chichakaloudmaximator11.6666@gmail.com",
-                password: password,
+                username: userData.username,
+                email: userData.email,
+                password: userData.password,
             }
+        }).catch((e) => {
+            res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
+            throw e
+        }).finally(async () => {
+            await client.$disconnect()
         })
-        res.json(createUser).status(200);
-    }
-);
+        res.json({msg:'User saved successfully!', user: newUser }).status(200);
+    });
+
+//         const password = bcryptjs.hashSync("Bebou")
+//         const createUser = await prisma.users.create({
+//             data: {
+//                 username: "MAXIME A TORD 11.6%",
+//                 email: "chichakaloudmaximator11.6666@gmail.com",
+//                 password: password,
+//             }
+//         })
+//         res.json(createUser).status(200);
+//     }
+// );
+
 
 
 
