@@ -6,8 +6,6 @@ const { PrismaClient } = require("@prisma/client");
 const bcryptjs = require('bcryptjs');
 const prisma = new PrismaClient();
 
-const {PrismaClient} = require('@prisma/client');
-
 const client = new PrismaClient()
 
 /* GET All User */
@@ -83,7 +81,7 @@ router.get('/create',
             data: {
                 username: userData.username,
                 email: userData.email,
-                password: userData.password,
+                password: bcryptjs.hashSync(userData.password),
             }
         }).catch((e) => {
             res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
