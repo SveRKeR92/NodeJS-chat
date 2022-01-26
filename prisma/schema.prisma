@@ -8,8 +8,17 @@ datasource db {
 }
 
 model users {
-  id        Int     @id @default(autoincrement())
-  username  String  @db.VarChar(255)
-  email     String  @unique(map: "email") @db.VarChar(255)
-  password  String  @db.VarChar(255)
+  id       Int    @id @default(autoincrement())
+  username String @db.VarChar(255)
+  email    String @unique(map: "email") @db.VarChar(255)
+  password String @db.VarChar(255)
+}
+
+model conversations {
+  id           Int      @id @default(autoincrement())
+  owner_id     Int      
+  link         String   @db.VarChar(255)
+  created_time DateTime @default(now()) @db.DateTime(0)
+
+  @@index([owner_id], map: "user_id")
 }
