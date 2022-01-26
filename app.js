@@ -12,8 +12,11 @@ const usersRouter  = require('./routes/users');
 const loginRouter  = require('./routes/login');
 const chatRouter   = require('./routes/chat');
 const subscriptionRouter = require('./routes/subscription');
+
 // import { PrismaClient } from '@prisma/client'
 // import { createServer } from 'http';
+const viewsRouter = require('./routes/views');
+const apiRouter = require('./routes/api');
 
 const app = express();
 // const httpServer = createServer(app);
@@ -39,11 +42,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/login', loginRouter);
-app.use('/subscription', subscriptionRouter);
-app.use('/chat', chatRouter);
+app.use('/', viewsRouter);
+app.use('/api', apiRouter);
 
 
 // catch 404 and forward to error handler
