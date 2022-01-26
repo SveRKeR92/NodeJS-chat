@@ -104,7 +104,26 @@ router.get('/create',
 //     }
 // );
 
-
+router.delete('/:userId',
+    /**
+     * 
+     * @param {express.Request<{userId: string}>} req 
+     * @param {express.Response} res 
+     * @param {express.NextFunction} next 
+     */
+    async (req, res, next) => {
+        const userId = Number.parseInt(req.params.userId)
+        const user = await prisma.users.delete({
+            where: {
+                id: userId
+            }
+        })
+        res.json({
+            success: true,
+            payload : user
+        })
+    }
+)
 
 
 module.exports = router;
