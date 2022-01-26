@@ -47,12 +47,13 @@ router.get('/create',
      * @param {express.NextFunction} next 
      */
     async (req, res, next) => {
+    const password = bcrypt.hashSync("Bebou")
     const createUser = await prisma.users.create({
             data: {
-                id: 2,
+                id: 5,
                 username: "MAXIME A TORD 11.6%",
-                email: "CHCICHA@KALOUD.COM",
-                password:("Bebou"),
+                email: "chichakaloudmaximator11.66@gmail.com",
+                password: password,
             }
         })
         res.json({createUser}).status(200);
