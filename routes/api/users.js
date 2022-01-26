@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs")
 
 const { PrismaClient } = require("@prisma/client");
+const bcryptjs = require('bcryptjs');
 const prisma = new PrismaClient();
 
 router.get('/',
@@ -18,19 +19,19 @@ router.get('/',
         res.json(allUsers);
     });
 
-router.get('/:userId',
+router.get('/get:userId',
     /**
      * @param {express.Request<{userId: string}>} req 
      * @param {express.Response} res 
      * @param {express.NextFunction} next 
      */
-    async (req, res, next) => {
+    async(req, res, next) => {
         const userId = Number.parseInt(req.params.userId);
-        const theUser = await prisma.users.findUnique({where: {id: userId}})
-        res.json({theUser}).status(200);
+        const theUser = await prisma.users.findUnique({where : {id: userId}})
+        res.json(theUser).status(200);
     });
 
-router.post('/:userId',
+router.post('/get:userId',
     /**
      * @param {express.Request<{userId: string}>} req 
      * @param {express.Response} res 
@@ -47,15 +48,16 @@ router.get('/create',
      * @param {express.NextFunction} next 
      */
     async (req, res, next) => {
-    const createUser = await prisma.users.create({
+        const password = bcryptjs.hashSync("Bebou")
+        const createUser = await prisma.users.create({
             data: {
-                id: 2,
+                id: 3,
                 username: "MAXIME A TORD 11.6%",
-                email: "CHCICHA@KALOUD.COM",
-                password:("Bebou"),
+                email: "zebi@zebi.com",
+                password: password,
             }
         })
-        res.json({createUser}).status(200);
+        res.json(createUser).status(200);
     });
 
 module.exports = router;
