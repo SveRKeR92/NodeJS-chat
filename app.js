@@ -1,7 +1,4 @@
 
-const createError  = require('http-errors');
-const express      = require('express');
-const path         = require('path');
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -9,12 +6,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 // const { Server }   = require("socket.io");
-
-const indexRouter  = require('./routes/index');
-const usersRouter  = require('./routes/users');
-const loginRouter  = require('./routes/login');
-const chatRouter   = require('./routes/chat');
-const subscriptionRouter = require('./routes/subscription');
 
 // import { PrismaClient } from '@prisma/client'
 // import { createServer } from 'http';
