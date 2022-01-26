@@ -63,14 +63,44 @@ router.post('/',
                 password: userData.password,
             }
         }).catch((e) => {
+            res.json({ msg: 'Error :' + e.msg + ' !', user: null }).status(e.status);
+            throw e
+        }).finally(async () => {
+            await client.$disconnect()
+        })
+        res.json({ msg: 'User saved successfully!', user: newUser }).status(200);
+    });
+
+
+    
+/* POST - Login User */
+
+router.post('/login',
+    /**
+     * @param {express.Request} req 
+     * @param {express.Response} res 
+     * @param {express.NextFunction} next 
+     */
+    async (req, res, next) => {
+        const userData = req.fields;
+        const user = await client.users.findFirst({
+            where: {
+                username : userData.username,
+                password : userData.password
+            },
+        }).catch((e) => {
             res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
             throw e
         }).finally(async () => {
             await client.$disconnect()
         })
-        res.json({msg:'User saved successfully!', user: newUser }).status(200);
+        if(user){
+            res.json({ msg: 'User finded!', user: user }).status(200);
+        }else{
+            res.json({ msg: 'User unfinded!', user: user }).status(200);
+        }
+        
     });
-
 
 
 module.exports = router;
