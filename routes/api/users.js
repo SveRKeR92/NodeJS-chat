@@ -1,27 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
 router.get('/',
     /**
      * @param {express.Request} req 
      * @param {express.Response} res 
      * @param {express.NextFunction} next 
      */
-    function (req, res, next) {
-        res.json({
-            count: 15,
-            users: [{
-                    id: 1,
-                    name: 'Crewmate',
-                    isConnected: true
-                },
-                {
-                    id: 2,
-                    name: 'Amogus',
-                    isConnected: false
-                }
-            ]
-        })
+    async function (req, res, next) {
+
+
+        const allUsers = await prisma.users.findMany()
+        res.json(allUsers);
     });
 
 router.get('/:userId',
