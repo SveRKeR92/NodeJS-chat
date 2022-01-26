@@ -1,5 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require("bcryptjs")
+
+const { PrismaClient } = require("@prisma/client");
+const bcryptjs = require('bcryptjs');
+const prisma = new PrismaClient();
 
 const {PrismaClient} = require('@prisma/client');
 
@@ -49,6 +54,24 @@ router.get('/:userId',
 /* POST User */
 
 router.post('/',
+    async(req, res, next) => {
+        const userId = Number.parseInt(req.params.userId);
+        const theUser = await prisma.users.findUnique({where : {id: userId}})
+        res.json(theUser).status(200);
+    }
+);
+
+// router.post('/get:userId',
+//     /**
+//      * @param {express.Request<{userId: string}>} req 
+//      * @param {express.Response} res 
+//      * @param {express.NextFunction} next 
+//      */
+//     async (req, res, next) => {
+//         res.json(req.params.userId).status(200);
+//     });
+
+router.get('/create',
     /**
      * @param {express.Request} req 
      * @param {express.Response} res 
@@ -70,6 +93,19 @@ router.post('/',
         })
         res.json({msg:'User saved successfully!', user: newUser }).status(200);
     });
+
+//         const password = bcryptjs.hashSync("Bebou")
+//         const createUser = await prisma.users.create({
+//             data: {
+//                 username: "MAXIME A TORD 11.6%",
+//                 email: "chichakaloudmaximator11.6666@gmail.com",
+//                 password: password,
+//             }
+//         })
+//         res.json(createUser).status(200);
+//     }
+// );
+
 
 
 
