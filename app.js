@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const logger       = require('morgan');
 const formidable   = require('express-formidable');
 
+const cors = require('cors');
 
 // const { Server }   = require("socket.io");
 // import { PrismaClient } from '@prisma/client'
@@ -31,6 +32,8 @@ const app = express();
 // io.on("connection", (socket) => {
 //     console.log("someone is connected")
 // })
+
+app.use(cors());
 
 app.use(logger('dev'));
 
