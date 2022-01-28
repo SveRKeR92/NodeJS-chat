@@ -69,7 +69,7 @@ router.post('/',
 //         res.json(req.params.userId).status(200);
 //     });
 
-router.get('/create',
+router.post('/create',
     /**
      * @param {express.Request} req 
      * @param {express.Response} res 
@@ -77,14 +77,15 @@ router.get('/create',
      */
     async (req, res, next) => {
         const userData = req.fields;
+        const password = bcryptjs.hashSync(userData.password);
         const newUser = await client.users.create({
             data: {
                 username: userData.username,
                 email: userData.email,
-                password: bcryptjs.hashSync(userData.password),
+                password: password,
             }
         }).catch((e) => {
-            res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
+            res.json({msg: 'Error :'+e.msg+' !', user : null,}).status(e.status);
             throw e
         }).finally(async () => {
             await client.$disconnect()
