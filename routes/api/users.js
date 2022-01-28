@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require("bcryptjs")
+const bcryptjs = require("bcryptjs")
+const jwt = require('jsonwebtoken');
 
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -16,9 +17,11 @@ router.get('/',
      * @param {express.NextFunction} next 
      */
     async (req, res, next) => {
+        let token = jwt.sign({foo : "bar"}, 'shhhhh')
         res.json({
             count: await client.users.count(),
-            users: [await client.users.findMany()]
+            users: [await client.users.findMany()],
+            token: token,
         })
     });
 
