@@ -161,10 +161,10 @@ router.post('/login',
             if(!user){
                 res.status(401).json({error : "User not found"});
             }
-            console.log(user)
+            // console.log(user)
             bcryptjs.compare(req.fields.password, user.password)
             .then(valid => {
-                console.log(valid)
+                // console.log(valid)
                 if(!valid){
                     res.status(401).json({error : "Wrong password"});
                 }
