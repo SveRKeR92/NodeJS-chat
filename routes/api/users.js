@@ -70,7 +70,7 @@ router.post('/login',
                 }
                 res.status(200).json({
                     userId: user.id,
-                    token = jwt.sign(
+                    token: jwt.sign(
                         { userId: user.id},
                         'RANDOM_TOKEN_SECRET',
                         { expiresIn: '24h'}
