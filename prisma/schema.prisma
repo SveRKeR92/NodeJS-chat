@@ -22,3 +22,5 @@ model conversations {
 
   @@index([owner_id], map: "user_id")
 }
+
+
