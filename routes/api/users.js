@@ -53,11 +53,33 @@ router.get('/:userId',
 
 /* POST User */
 
-router.post('/',
+router.post('/login',
     async(req, res, next) => {
-        const userId = Number.parseInt(req.params.userId);
-        const theUser = await prisma.users.findUnique({where : {id: userId}})
-        res.json(theUser).status(200);
+        prisma.users.findUnique({
+            where:{
+                email: req.body.email
+            }
+        }).then(user => {
+            if(!user){
+                res.status(401).json({error : "User not found"});
+            }
+            bcryptjs.compareSync(req.body.password, user.password)
+            .then(valid => {
+                if(!valid){
+                    res.status(401).json({error : "Wrong password"});
+                }
+                res.status(200).json({
+                    userId: user.id,
+                    token = jwt.sign(
+                        { userId: user.id},
+                        'RANDOM_TOKEN_SECRET',
+                        { expiresIn: '24h'}
+                    )
+                })
+            })
+            .catch(e => res.status(500).json({e}))
+        })
+        .catch(e => res.status(500).json({e})) 
     }
 );
 
