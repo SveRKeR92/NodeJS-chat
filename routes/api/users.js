@@ -53,36 +53,6 @@ router.get('/:userId',
 
 /* POST User */
 
-router.post('/login',
-    async(req, res, next) => {
-        prisma.users.findUnique({
-            where:{
-                email: req.body.email
-            }
-        }).then(user => {
-            if(!user){
-                res.status(401).json({error : "User not found"});
-            }
-            bcryptjs.compareSync(req.body.password, user.password)
-            .then(valid => {
-                if(!valid){
-                    res.status(401).json({error : "Wrong password"});
-                }
-                res.status(200).json({
-                    userId: user.id,
-                    token: jwt.sign(
-                        { userId: user.id},
-                        'RANDOM_TOKEN_SECRET',
-                        { expiresIn: '24h'}
-                    )
-                })
-            })
-            .catch(e => res.status(500).json({e}))
-        })
-        .catch(e => res.status(500).json({e})) 
-    }
-);
-
 // router.post('/get:userId',
 //     /**
 //      * @param {express.Request<{userId: string}>} req 
@@ -101,6 +71,7 @@ router.post('/create',
      */
     async (req, res, next) => {
         const userData = req.fields;
+        console.log(userData)
         const password = bcryptjs.hashSync(userData.password);
         const newUser = await client.users.create({
             data: {
@@ -150,35 +121,67 @@ router.delete('/:userId',
     }
 )
 
-    
 /* POST - Login User */
 
+// router.post('/login',
+//     /**
+//      * @param {express.Request} req 
+//      * @param {express.Response} res 
+//      * @param {express.NextFunction} next 
+//      */
+//     async (req, res, next) => {
+//         const userData = req.fields;
+//         const user = await client.users.findFirst({
+//             where: {
+//                 username : userData.username,
+//                 password : userData.password
+//             },
+//         }).catch((e) => {
+//             res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
+//             throw e
+//         }).finally(async () => {
+//             await client.$disconnect()
+//         })
+//         if(user){
+//             res.json({ msg: 'User finded!', user: user }).status(200);
+//         }else{
+//             res.json({ msg: 'User unfinded!', user: user }).status(200);
+//         }
+//     }
+// );
+
 router.post('/login',
-    /**
-     * @param {express.Request} req 
-     * @param {express.Response} res 
-     * @param {express.NextFunction} next 
-     */
-    async (req, res, next) => {
-        const userData = req.fields;
-        const user = await client.users.findFirst({
-            where: {
-                username : userData.username,
-                password : userData.password
-            },
-        }).catch((e) => {
-            res.json({msg: 'Error :'+e.msg+' !', user : null}).status(e.status);
-            throw e
-        }).finally(async () => {
-            await client.$disconnect()
+    async(req, res, next) => {
+        // console.log(req.fields)
+        prisma.users.findUnique({
+            where:{
+                email: req.fields.email
+            }
+        }).then(user => {
+            if(!user){
+                res.status(401).json({error : "User not found"});
+            }
+            console.log(user)
+            bcryptjs.compare(req.fields.password, user.password)
+            .then(valid => {
+                console.log(valid)
+                if(!valid){
+                    res.status(401).json({error : "Wrong password"});
+                }
+                res.status(200).json({
+                    userId: user.id,
+                    token: jwt.sign(
+                        { userId: user.id},
+                        'RANDOM_TOKEN_SECRET',
+                        { expiresIn: '24h'}
+                    )
+                })
+            })
+            .catch(e => res.status(500).json({e}))
         })
-        if(user){
-            res.json({ msg: 'User finded!', user: user }).status(200);
-        }else{
-            res.json({ msg: 'User unfinded!', user: user }).status(200);
-        }
-        
-    });
+        .catch(e => res.status(500).json({e})) 
+    }
+);
 
 
 module.exports = router;
