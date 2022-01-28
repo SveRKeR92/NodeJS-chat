@@ -53,16 +53,6 @@ router.get('/:userId',
 
 /* POST User */
 
-// router.post('/get:userId',
-//     /**
-//      * @param {express.Request<{userId: string}>} req 
-//      * @param {express.Response} res 
-//      * @param {express.NextFunction} next 
-//      */
-//     async (req, res, next) => {
-//         res.json(req.params.userId).status(200);
-//     });
-
 router.post('/create',
     /**
      * @param {express.Request} req 
@@ -87,18 +77,6 @@ router.post('/create',
         })
         res.json({ msg: 'User saved successfully!', user: newUser }).status(200);
     });
-
-//         const password = bcryptjs.hashSync("Bebou")
-//         const createUser = await prisma.users.create({
-//             data: {
-//                 username: "MAXIME A TORD 11.6%",
-//                 email: "chichakaloudmaximator11.6666@gmail.com",
-//                 password: password,
-//             }
-//         })
-//         res.json(createUser).status(200);
-//     }
-// );
 
 router.delete('/:userId',
     /**
