@@ -16,11 +16,10 @@ model users {
 
 model conversations {
   id           Int      @id @default(autoincrement())
-  owner_id     Int      
+  owner_id     Int
   link         String   @db.VarChar(255)
+  isPrivate    Boolean
   created_time DateTime @default(now()) @db.DateTime(0)
 
   @@index([owner_id], map: "user_id")
 }
-
-
